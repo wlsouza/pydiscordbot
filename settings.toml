@@ -1,0 +1,4 @@
+[default]
+COMMAND_PREFIX = "$"
+AVAILABLE_EXTENSIONS = ["brhue"]
+RAMIN_ID = "Cell7#3514"

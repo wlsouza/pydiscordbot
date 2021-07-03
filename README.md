@@ -1,2 +1,2 @@
 # pydiscordbot
-Implementation of a multipurpose discord bot in python.
+Implementação de um bot de discord multipropositos.
