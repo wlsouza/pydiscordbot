@@ -1,5 +1,5 @@
 from discord.ext import commands
-from starbot.ext.config import settings
+from pydiscordbot.ext.config import settings
 
 
 class MainBot(commands.Cog):
@@ -15,31 +15,31 @@ class MainBot(commands.Cog):
     @commands.has_role("admin")
     async def available_modules(self, ctx):
         # TODO: fazer o available_extensions aparecer formatado
-       await ctx.send(str(settings.AVAILABLE_EXTENSIONS))
+       await ctx.send(",".join(settings.AVAILABLE_EXTENSIONS))
 
     @commands.command()
     @commands.has_role("admin")
     async def loaded_extensions(self, ctx):
         loaded_extensions = str(self.app.extensions)
-        # TODO: corrigir esse loaded extensions
+        # TODO: fazer o available_extensions aparecer formatado
         await ctx.send(loaded_extensions)
 
     @commands.command()
     @commands.has_role("admin")
     async def load_extension(self, ctx, extension: str):
-        self.app.load_extension(f"starbot.ext.{extension}")
+        self.app.load_extension(f"pydiscordbot.ext.{extension}")
         await ctx.send(f"The module {extension} was loaded.")
 
     @commands.command()
     @commands.has_role("admin")
     async def unload_extension(self, ctx, extension: str):
-        self.app.unload_extension(f"starbot.ext.{extension}")
+        self.app.unload_extension(f"pydiscordbot.ext.{extension}")
         await ctx.send(f"The module {extension} was unloaded.")
 
     @commands.command()
     @commands.has_role("admin")
     async def reload_extension(self, ctx, extension: str):
-        self.app.reload_extension(f"starbot.ext.{extension}")
+        self.app.reload_extension(f"pydiscordbot.ext.{extension}")
         ctx.send(f"The module {extension} was reloaded.")
 
     @reload_extension.error

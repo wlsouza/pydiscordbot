@@ -1,8 +1,7 @@
 from discord.ext import commands
 
-from starbot.ext.config import settings
-from starbot.ext import bot
-from starbot.ext import brhue
+from pydiscordbot.ext.config import settings
+from pydiscordbot.ext import bot, countdown
 
 
 def create_app():
@@ -11,6 +10,6 @@ def create_app():
 
     # Initiating extensions
     bot.init_app(app)
-    brhue.init_app(app)
+    countdown.init_app(app)
 
     return app.run(settings.TOKEN_BOT)

@@ -1,4 +1,4 @@
-from starbot.ext.bot.mainbot import MainBot
+from pydiscordbot.ext.bot.mainbot import MainBot
 
 
 def init_app(app):

@@ -6,9 +6,9 @@ def read_file(file_path):
         return [line.strip() for line in file.readlines()]
 
 setup(
-    name="starbot",
+    name="pydiscordbot",
     version="0.1.0",
-    description="Star bot",
+    description="Implementation of a multipurpose discord bot in python.",
     packages=find_packages(),
     include_package_data=True,
     install_requires=read_file("requirements.txt")

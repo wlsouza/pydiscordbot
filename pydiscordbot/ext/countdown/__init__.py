@@ -1,4 +1,4 @@
-from starbot.ext.brhue.ramin import Ramin
+from .countdown import CountDown
 
 
 def init_app(app):
@@ -10,4 +10,4 @@ def init_app(app):
 
 
 def setup(app):
-    app.add_cog(Ramin(app))
+    app.add_cog(CountDown(app))

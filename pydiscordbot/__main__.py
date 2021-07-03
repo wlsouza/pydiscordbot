@@ -1,3 +1,3 @@
-from starbot import app
+import app
 
 app.create_app()
