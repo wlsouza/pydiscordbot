@@ -1,4 +1,3 @@
 [default]
 COMMAND_PREFIX = "$"
-AVAILABLE_EXTENSIONS = ["countdown"]
-RAMIN_ID = "Cell7#3514"
+MODULES = {countdown="pydiscordbot.ext.countdown"}
