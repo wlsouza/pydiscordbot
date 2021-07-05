@@ -1,5 +1,5 @@
 from discord.ext import commands
-from asyncio.exceptions import TimeoutError
+from asyncio.exceptions import CancelledError, TimeoutError
 from dislash import SelectMenu, SelectOption
 
 from pydiscordbot.ext.config import settings
@@ -15,33 +15,43 @@ class BotModuleManager(commands.Cog):
     async def on_ready(self):
         print(f"The module \"BotModuleManager\" are online!")
 
-    # @commands.command()
-    # @commands.has_role("admin")
-    # async def available_modules(self, ctx):
-    #     # TODO: fazer o available_extensions aparecer formatado
-    #    await ctx.send(",".join(settings.AVAILABLE_MODULES))
+    # Auxiliary methods
 
-    # @commands.command()
-    # @commands.has_role("admin")
-    # async def loaded_extensions(self, ctx):
-    #     loaded_modules = [module.replace("pydiscordbot.ext.","") for module in self.app.extensions.keys()] 
-    #     # TODO: fazer o available_extensions aparecer formatado
-    #     await ctx.send(",".join(loaded_modules))
+    def _get_unloaded_modules(self):
+        unloaded_modules = []
+        app_modules = self.app.extensions.keys()
+        for module_name, module_path in settings.MODULES.items():
+            if module_path not in app_modules:
+                unloaded_modules.append((module_name, module_path))
+        return unloaded_modules
+
+    def _get_loaded_modules(self):
+        loaded_modules = []
+        app_modules = self.app.extensions.keys()
+        for module_name, module_path in settings.MODULES.items():
+            if module_path in app_modules:
+                loaded_modules.append((module_name, module_path))
+        return loaded_modules
+
+    # Command methods
 
     @commands.command()
     @commands.has_role("admin")
     async def load_modules(self, ctx):
         try:
-            loaded_modules = self.app.extensions.keys()
+            # set select/dropdown options
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in settings.MODULES.items():
-                if module_path not in loaded_modules:
-                    select_options.insert(
-                        0,
-                        SelectOption(label=module_name.title(), value=module_path, emoji="⚙️")
+            for module_name, module_path in self._get_unloaded_modules():
+                select_options.insert(
+                    0,
+                    SelectOption(
+                        label=module_name.title(),
+                        value=module_path,
+                        emoji="⚙️"
                     )
+                )
             msg = await ctx.send(
                 "Select the module to be loaded into the bot:",
                 components=[
@@ -53,21 +63,23 @@ class BotModuleManager(commands.Cog):
                     )
                 ]
             )
-            def check(m):
-                return m.author == ctx.author
             # Wait for a click on the menu that was sent.
-            inter = await msg.wait_for_dropdown(check=check, timeout=60)
+            inter = await msg.wait_for_dropdown(
+                check=(lambda m: m.author == ctx.author),
+                timeout=60
+            )
             # Tells which option was selected. 
             selected_options = inter.select_menu.selected_options
             selected_labels = [option.label for option in selected_options]
             selected_values = [option.value for option in selected_options]
             if "cancel" in selected_values:
-                await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
-                return None
+                raise CancelledError()
             # Load the modules
             for module_path in selected_values:
                 self.app.load_extension(module_path)
             await inter.reply(f"👌 The following module(s) have been loaded: {', '.join(selected_labels)}")
+        except CancelledError:
+            await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
             await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
 
@@ -75,16 +87,19 @@ class BotModuleManager(commands.Cog):
     @commands.has_role("admin")
     async def unload_modules(self, ctx):
         try:
-            loaded_modules = self.app.extensions.keys()
+            # set select/dropdown options
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in settings.MODULES.items():
-                if module_path in loaded_modules:
-                    select_options.insert(
-                        0,
-                        SelectOption(label=module_name.title(), value=module_path, emoji="⚙️")
+            for module_name, module_path in self._get_unloaded_modules():
+                select_options.insert(
+                    0,
+                    SelectOption(
+                        label=module_name.title(),
+                        value=module_path,
+                        emoji="⚙️"
                     )
+                )
             msg = await ctx.send(
                 "Select the module to be unloaded from the bot:",
                 components=[
@@ -96,39 +111,44 @@ class BotModuleManager(commands.Cog):
                     )
                 ]
             )
-            def check(m):
-                return m.author == ctx.author
             # Wait for a click on the menu that was sent.
-            inter = await msg.wait_for_dropdown(check=check, timeout=60)
+            inter = await msg.wait_for_dropdown(
+                check= (lambda m: m.author == ctx.author),
+                timeout=60
+            )
             # Tells which option was selected. 
             selected_options = inter.select_menu.selected_options
             selected_labels = [option.label for option in selected_options]
             selected_values = [option.value for option in selected_options]
             if "cancel" in selected_values:
-                await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
-                return None
+                raise CancelledError()
             # Load the modules
             for module_path in selected_values:
                 self.app.unload_extension(module_path)
             await inter.reply(f"👌 The following module(s) have been unloaded: {', '.join(selected_labels)}")
+        except CancelledError:
+            await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
-            await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+            await msg.reply("⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
 
 
     @commands.command()
     @commands.has_role("admin")
     async def reload_modules(self, ctx):
         try:
-            loaded_modules = self.app.extensions.keys()
+            # set select/dropdown options
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in settings.MODULES.items():
-                if module_path in loaded_modules:
-                    select_options.insert(
-                        0,
-                        SelectOption(label=module_name.title(), value=module_path, emoji="⚙️")
+            for module_name, module_path in self._get_unloaded_modules():
+                select_options.insert(
+                    0,
+                    SelectOption(
+                        label=module_name.title(),
+                        value=module_path,
+                        emoji="⚙️"
                     )
+                )
             msg = await ctx.send(
                 "Select the module to be reloaded from the bot:",
                 components=[
@@ -140,23 +160,25 @@ class BotModuleManager(commands.Cog):
                     )
                 ]
             )
-            def check(m):
-                return m.author == ctx.author
             # Wait for a click on the menu that was sent.
-            inter = await msg.wait_for_dropdown(check=check, timeout=60)
+            inter = await msg.wait_for_dropdown(
+                check= (lambda m: m.author == ctx.author),
+                timeout=60
+            )
             # Tells which option was selected. 
             selected_options = inter.select_menu.selected_options
             selected_labels = [option.label for option in selected_options]
             selected_values = [option.value for option in selected_options]
             if "cancel" in selected_values:
-                await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
-                return None
+                raise CancelledError()
             # Load the modules
             for module_path in selected_values:
-                self.app.reload_extension(module_path)
-            await inter.reply(f"👌 The following module(s) have been reloaded: {', '.join(selected_labels)}")
+                self.app.unload_extension(module_path)
+            await inter.reply(f"👌 The following module(s) have been reloaded: {', '.join(selected_labels)}")  
+        except CancelledError:
+            await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
-            await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+            await msg.reply("⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
 
     @reload_modules.error
     @unload_modules.error
@@ -182,4 +204,3 @@ class BotModuleManager(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.errors.MissingRole):
             await ctx.send("You don't have the correct role for this command.")
-
