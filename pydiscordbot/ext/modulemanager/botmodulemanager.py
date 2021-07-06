@@ -132,6 +132,8 @@ class BotModuleManager(commands.Cog):
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
             await msg.reply("⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+        except ModuleNotFoundError:
+            await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
 
 
     @commands.command()
@@ -181,6 +183,8 @@ class BotModuleManager(commands.Cog):
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
             await msg.reply("⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+        except ModuleNotFoundError:
+            await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
 
     @reload_modules.error
     @unload_modules.error
