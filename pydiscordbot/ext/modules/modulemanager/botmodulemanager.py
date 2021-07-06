@@ -13,7 +13,7 @@ class BotModuleManager(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"The module \"BotModuleManager\" are online!")
+        print(f"The BotModuleManager module are online!")
 
     # Auxiliary methods
 
