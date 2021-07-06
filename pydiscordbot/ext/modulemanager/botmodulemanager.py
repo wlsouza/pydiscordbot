@@ -2,7 +2,7 @@ from discord.ext import commands
 from asyncio.exceptions import CancelledError, TimeoutError
 from dislash import SelectMenu, SelectOption
 
-from pydiscordbot.ext.config import settings
+from ext.config import settings
 
 
 class BotModuleManager(commands.Cog):
@@ -82,6 +82,8 @@ class BotModuleManager(commands.Cog):
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
             await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+        except ModuleNotFoundError:
+            await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
 
     @commands.command()
     @commands.has_role("admin")

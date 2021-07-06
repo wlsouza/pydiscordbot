@@ -1,7 +1,6 @@
 import random
 
 from discord.ext import commands
-from pydiscordbot.ext.config import settings
 
 
 

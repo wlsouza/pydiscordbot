@@ -1,4 +1,4 @@
-from pydiscordbot.ext.modulemanager import botmodulemanager
+from ext.modulemanager import botmodulemanager
 
 
 def init_app(app):

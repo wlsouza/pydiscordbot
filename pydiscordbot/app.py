@@ -1,8 +1,8 @@
 from discord.ext import commands
 from dislash import SlashClient
 
-from pydiscordbot.ext.config import settings
-from pydiscordbot.ext import modulemanager, countdown
+from ext.config import settings
+from ext import modulemanager, countdown
 
 
 def create_app():
