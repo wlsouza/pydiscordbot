@@ -14,11 +14,19 @@ def create_app():
     slash = SlashClient(app)
 
     # Initiating modules
-    #db.init_app()
+    # db.init_app()
 
     # Initiating modules
     modulemanager.init_app(app) # Most Important module
     countdown.init_app(app)
+
+
+
+    # m1 = models.Module(name="test", path="teste", emoji="❌")
+
+    # db.session.add(m1)
+
+    # db.session.commit()
 
     return app.run(settings.TOKEN_BOT)
 

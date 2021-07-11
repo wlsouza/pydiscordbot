@@ -2,3 +2,4 @@ discord.py[voice]
 dynaconf
 dislash.py
 sqlalchemy
+alembic

@@ -130,3 +130,9 @@ dmypy.json
 
 # Dynaconf
 .secrets.toml
+
+# Alembic
+alembic.ini
+
+# sqlite-db
+*.db
