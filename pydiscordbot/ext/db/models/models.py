@@ -3,20 +3,6 @@ from sqlalchemy.orm import relationship
 from ext.db import Base
 
 
-class GuildModule(Base):
-
-    __tablename__ = "guildmodules"
-
-    id = Column(Integer,autoincrement=True, primary_key=True)
-    guild_id = Column(Integer, ForeignKey("guilds.id"))
-    module_id = Column(Integer, ForeignKey("modules.id"))
-    active = Column(Boolean, nullable=False, default=True)
-
-    guild = relationship("Guild")
-    module = relationship("Module")
-
-    def __repr__(self):
-        return f"GuildModule(id={self.id})"
 
 class Guild(Base):
 
@@ -25,7 +11,7 @@ class Guild(Base):
     id = Column(Integer, primary_key=True)
     prefix = Column(String, default="$")
 
-    guildmodules = relationship(GuildModule, backref="guilds")
+    guildmodules = relationship("GuildModule", back_populates="guild")
 
     def __repr__(self):
         return f"Guild(id={self.id}, prefix={self.prefix})"
@@ -40,11 +26,25 @@ class Module(Base):
     path = Column(String, nullable=False)
     emoji = Column(String)
 
-    guildmodules = relationship(GuildModule, backref="modules")
+    guildmodules = relationship("GuildModule", back_populates="module")
 
     def __repr__(self):
         return f"Module(id={self.id}, name={self.name})"
 
+class GuildModule(Base):
+
+    __tablename__ = "guildmodules"
+
+    id = Column(Integer,autoincrement=True, primary_key=True)
+    guild_id = Column(Integer, ForeignKey("guilds.id"))
+    module_id = Column(Integer, ForeignKey("modules.id"))
+    active = Column(Boolean, nullable=False, default=True)
+
+    guild = relationship("Guild", back_populates="guildmodules")
+    module = relationship("Module", back_populates="guildmodules")
+
+    def __repr__(self):
+        return f"GuildModule(id={self.id})"
 
 
 
