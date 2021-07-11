@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from ext.config import settings
 
 Base = declarative_base()
 
-engine = create_engine('sqlite:///test.db', echo=True)
+engine = create_engine(settings.sqlalchemy_database_url, echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
