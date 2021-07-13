@@ -6,8 +6,6 @@ from ext.config import settings
 
 def get_prefix(client, message): 
     try:
-        print(message.guild.id)
-        print(type(message.guild.id))
         guild = session.query(Guild).filter(Guild.id==message.guild.id).one()
         return guild.prefix
     except NoResultFound:
