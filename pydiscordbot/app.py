@@ -8,7 +8,6 @@ from ext import db
 from ext.db import models
 
 
-
 def create_app():
     # creating bot
     app = commands.Bot(command_prefix=checkers.get_prefix)
@@ -20,14 +19,6 @@ def create_app():
     # Initiating modules
     modulemanager.init_app(app) # Most Important module
     countdown.init_app(app)
-
-    # m1 = models.Module(name="test", path="teste", emoji="❌")
-
-    # g1 = models.Guild(id=860716845194543104, prefix="!")
-
-    # db.session.add(g1)
-
-    # db.session.commit()
 
     return app.run(settings.TOKEN_BOT)
 

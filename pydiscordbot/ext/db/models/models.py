@@ -24,6 +24,7 @@ class Module(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String, nullable=False)
     path = Column(String, nullable=False)
+    disableable = Column(Boolean, nullable=False, default=True)
     emoji = Column(String)
 
     guildmodules = relationship("GuildModule", back_populates="module")

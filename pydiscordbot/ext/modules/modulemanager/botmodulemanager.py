@@ -1,8 +1,11 @@
 from discord.ext import commands
 from asyncio.exceptions import CancelledError, TimeoutError
 from dislash import SelectMenu, SelectOption
+from sqlalchemy.orm.exc import NoResultFound
 
 from ext.config import settings
+from ext import db
+from ext.db.models import Module
 
 
 class BotModuleManager(commands.Cog):
@@ -10,12 +13,29 @@ class BotModuleManager(commands.Cog):
 
     def __init__(self, app):
         self.app = app
+        if not self._module_in_db():
+            self._insert_module_in_db()
 
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"The BotModuleManager module are online!")
 
     # Auxiliary methods
+    def _insert_module_in_db(self):
+        module = Module(
+            name="BotModuleManager",
+            path="ext.modules.countdown",
+            disableable=True
+        )
+        db.session.add(module)
+        db.session.commit()
+
+    def _module_in_db(self):
+        try:
+            db.session.query(Module).filter(Module.name == "BotModuleManager").one()
+            return True
+        except:
+            return False
 
     def _get_unloaded_modules(self):
         unloaded_modules = []
