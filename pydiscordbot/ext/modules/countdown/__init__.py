@@ -1,4 +1,4 @@
-from .countdown import CountDown
+from .countdown import Countdown
 
 
 def init_app(app):
@@ -10,4 +10,4 @@ def init_app(app):
 
 
 def setup(app):
-    app.add_cog(CountDown(app))
+    app.add_cog(Countdown(app))
