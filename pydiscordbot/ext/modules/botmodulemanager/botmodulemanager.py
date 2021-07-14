@@ -19,7 +19,7 @@ class BotModuleManager(commands.Cog):
     def _insert_module_in_db(self):
         module = Module(
             name="BotModuleManager",
-            path="ext.modules.modulemanager.botmodulemanager",
+            path="ext.modules.botmodulemanager",
             disableable=False
         )
         db.session.add(module)

@@ -8,6 +8,8 @@ class Countdown(commands.Cog):
 
     def __init__(self, app):
         self.app = app
+        if not self._module_in_db():
+            self._insert_module_in_db()
 
     # Auxiliary methods
     def _insert_module_in_db(self):
