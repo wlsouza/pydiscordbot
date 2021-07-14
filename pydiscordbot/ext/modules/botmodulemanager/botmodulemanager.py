@@ -35,17 +35,19 @@ class BotModuleManager(commands.Cog):
     def _get_unloaded_modules(self):
         unloaded_modules = []
         app_modules = self.app.extensions.keys()
-        for module_name, module_path in settings.MODULES.items():
-            if module_path not in app_modules:
-                unloaded_modules.append((module_name, module_path))
+        db_modules = db.session.query(Module).filter(Module.disableable == True).all()
+        for module in db_modules:
+            if module.path not in app_modules:
+                unloaded_modules.append(module)
         return unloaded_modules
 
     def _get_loaded_modules(self):
         loaded_modules = []
         app_modules = self.app.extensions.keys()
-        for module_name, module_path in settings.MODULES.items():
-            if module_path in app_modules:
-                loaded_modules.append((module_name, module_path))
+        db_modules = db.session.query(Module).filter(Module.disableable == True).all()
+        for module in db_modules:
+            if module.path in app_modules:
+                loaded_modules.append(module)
         return loaded_modules
 
     # Command methods
@@ -62,13 +64,13 @@ class BotModuleManager(commands.Cog):
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in self._get_unloaded_modules():
+            for module in self._get_unloaded_modules():
                 select_options.insert(
                     0,
                     SelectOption(
-                        label=module_name.title(),
-                        value=module_path,
-                        emoji="⚙️"
+                        label=module.name.title(),
+                        value=module.path,
+                        emoji=module.emoji
                     )
                 )
             msg = await ctx.send(
@@ -112,13 +114,13 @@ class BotModuleManager(commands.Cog):
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in self._get_loaded_modules():
+            for module in self._get_loaded_modules():
                 select_options.insert(
                     0,
                     SelectOption(
-                        label=module_name.title(),
-                        value=module_path,
-                        emoji="⚙️"
+                        label=module.name.title(),
+                        value=module.path,
+                        emoji=module.emoji
                     )
                 )
             msg = await ctx.send(
@@ -163,13 +165,13 @@ class BotModuleManager(commands.Cog):
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in self._get_loaded_modules():
+            for module in self._get_loaded_modules():
                 select_options.insert(
                     0,
                     SelectOption(
-                        label=module_name.title(),
-                        value=module_path,
-                        emoji="⚙️"
+                        label=module.name.title(),
+                        value=module.path,
+                        emoji=module.emoji
                     )
                 )
             msg = await ctx.send(

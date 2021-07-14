@@ -16,7 +16,8 @@ class Countdown(commands.Cog):
         module = Module(
             name="Countdown",
             path="ext.modules.countdown",
-            disableable=True
+            disableable=True,
+            emoji="⏰"
         )
         db.session.add(module)
         db.session.commit()
