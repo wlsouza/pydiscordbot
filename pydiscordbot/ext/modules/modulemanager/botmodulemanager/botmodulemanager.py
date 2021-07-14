@@ -9,23 +9,18 @@ from ext.db.models import Module
 
 
 class BotModuleManager(commands.Cog):
-    
 
     def __init__(self, app):
         self.app = app
         if not self._module_in_db():
             self._insert_module_in_db()
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"The BotModuleManager module are online!")
-
     # Auxiliary methods
     def _insert_module_in_db(self):
         module = Module(
             name="BotModuleManager",
-            path="ext.modules.countdown",
-            disableable=True
+            path="ext.modules.modulemanager.botmodulemanager",
+            disableable=False
         )
         db.session.add(module)
         db.session.commit()
@@ -34,7 +29,7 @@ class BotModuleManager(commands.Cog):
         try:
             db.session.query(Module).filter(Module.name == "BotModuleManager").one()
             return True
-        except:
+        except NoResultFound:
             return False
 
     def _get_unloaded_modules(self):
@@ -54,6 +49,10 @@ class BotModuleManager(commands.Cog):
         return loaded_modules
 
     # Command methods
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f"The BotModuleManager module are online!")
 
     @commands.command()
     @commands.has_role("admin")
@@ -113,7 +112,7 @@ class BotModuleManager(commands.Cog):
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in self._get_unloaded_modules():
+            for module_name, module_path in self._get_loaded_modules():
                 select_options.insert(
                     0,
                     SelectOption(
@@ -164,7 +163,7 @@ class BotModuleManager(commands.Cog):
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module_name, module_path in self._get_unloaded_modules():
+            for module_name, module_path in self._get_loaded_modules():
                 select_options.insert(
                     0,
                     SelectOption(

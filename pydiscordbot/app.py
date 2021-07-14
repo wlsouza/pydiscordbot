@@ -5,7 +5,6 @@ from ext.config import settings
 from ext.modules import modulemanager, countdown
 from ext.utils import checkers
 from ext import db
-from ext.db import models
 
 
 def create_app():
@@ -17,7 +16,7 @@ def create_app():
     db.init_app()
 
     # Initiating modules
-    modulemanager.init_app(app) # Most Important module
+    modulemanager.botmodulemanager.init_app(app) # Most Important module
     countdown.init_app(app)
 
     return app.run(settings.TOKEN_BOT)
