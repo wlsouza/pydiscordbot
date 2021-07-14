@@ -1,3 +1,2 @@
 [default]
 DEFAULT_COMMAND_PREFIX = "$"
-MODULES = {countdown="ext.modules.countdown"}
