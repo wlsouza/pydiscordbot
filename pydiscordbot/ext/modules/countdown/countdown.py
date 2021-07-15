@@ -37,13 +37,6 @@ class Countdown(commands.Cog):
             self.session.add(module)
             self.session.commit()
 
-    def _module_in_db(self):
-        try:
-            self.session.query(Module).filter(Module.name == "Countdown").one()
-            return True
-        except NoResultFound:
-            return False
-
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"The {self.__class__.__name__} module are online!")
