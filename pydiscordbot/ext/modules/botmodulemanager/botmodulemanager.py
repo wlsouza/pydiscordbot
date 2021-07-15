@@ -12,22 +12,23 @@ class BotModuleManager(commands.Cog):
 
     def __init__(self, app):
         self.app = app
+        self.session = db.Session()
         if not self._module_in_db():
             self._insert_module_in_db()
 
     # Auxiliary methods
     def _insert_module_in_db(self):
         module = Module(
-            name="BotModuleManager",
+            name="BotModulemMSanager",
             path="ext.modules.botmodulemanager",
             disableable=False
         )
-        db.session.add(module)
-        db.session.commit()
+        self.session.add(module)
+        self.session.commit()
 
     def _module_in_db(self):
         try:
-            db.session.query(Module).filter(Module.name == "BotModuleManager").one()
+            self.session.query(Module).filter(Module.name == "BotModuleManager").one()
             return True
         except NoResultFound:
             return False
@@ -35,7 +36,7 @@ class BotModuleManager(commands.Cog):
     def _get_unloaded_modules(self):
         unloaded_modules = []
         app_modules = self.app.extensions.keys()
-        db_modules = db.session.query(Module).filter(Module.disableable == True).all()
+        db_modules = self.session.query(Module).filter(Module.disableable == True).all()
         for module in db_modules:
             if module.path not in app_modules:
                 unloaded_modules.append(module)
@@ -44,7 +45,7 @@ class BotModuleManager(commands.Cog):
     def _get_loaded_modules(self):
         loaded_modules = []
         app_modules = self.app.extensions.keys()
-        db_modules = db.session.query(Module).filter(Module.disableable == True).all()
+        db_modules = self.session.query(Module).filter(Module.disableable == True).all()
         for module in db_modules:
             if module.path in app_modules:
                 loaded_modules.append(module)

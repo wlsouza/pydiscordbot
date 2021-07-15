@@ -9,7 +9,5 @@ engine = create_engine(settings.sqlalchemy_database_url, echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-
 def init_app():
     Base.metadata.create_all(engine)
-

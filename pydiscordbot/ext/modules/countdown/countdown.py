@@ -8,7 +8,10 @@ class Countdown(commands.Cog):
 
     def __init__(self, app):
         self.app = app
-        if not self._module_in_db():
+        self.session = db.Session()
+        if self._module_in_db():
+            self._update_module_in_db()
+        else:
             self._insert_module_in_db()
 
     # Auxiliary methods
@@ -19,12 +22,12 @@ class Countdown(commands.Cog):
             disableable=True,
             emoji="⏰"
         )
-        db.session.add(module)
-        db.session.commit()
+        self.session.add(module)
+        self.session.commit()
 
     def _module_in_db(self):
         try:
-            db.session.query(Module).filter(Module.name == "Countdown").one()
+            self.session.query(Module).filter(Module.name == "Countdown").one()
             return True
         except NoResultFound:
             return False
