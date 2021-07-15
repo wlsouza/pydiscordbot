@@ -2,6 +2,7 @@ from discord.ext import commands
 from asyncio.exceptions import CancelledError, TimeoutError
 from dislash import SelectMenu, SelectOption
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import or_
 
 from ext.config import settings
 from ext import db
@@ -10,28 +11,35 @@ from ext.db.models import Module
 
 class BotModuleManager(commands.Cog):
 
+    name = "BotModuleManager"
+    path = "ext.modules.botmodulemanager"
+    disableable = False
+    emoji = None 
+
     def __init__(self, app):
         self.app = app
         self.session = db.Session()
-        if not self._module_in_db():
-            self._insert_module_in_db()
+        self._init_module_in_db()
 
     # Auxiliary methods
-    def _insert_module_in_db(self):
-        module = Module(
-            name="BotModulemMSanager",
-            path="ext.modules.botmodulemanager",
-            disableable=False
-        )
-        self.session.add(module)
-        self.session.commit()
 
-    def _module_in_db(self):
+    def _init_module_in_db(self):
         try:
-            self.session.query(Module).filter(Module.name == "BotModuleManager").one()
-            return True
+            module = self.session.query(Module).filter(or_(Module.name == self.name, Module.path == self.path)).one()
+            module.name = self.name
+            module.path = self.path
+            module.disableable = self.disableable
+            module.emoji = self.emoji
+            self.session.commit()
         except NoResultFound:
-            return False
+            module = Module(
+                name=self.name,
+                path=self.path,
+                disableable=self.disableable,
+                emoji=self.emoji
+            )
+            self.session.add(module)
+            self.session.commit()
 
     def _get_unloaded_modules(self):
         unloaded_modules = []
