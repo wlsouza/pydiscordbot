@@ -1,69 +1,34 @@
 from discord.ext import commands
 from asyncio.exceptions import CancelledError, TimeoutError
 from dislash import SelectMenu, SelectOption
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import or_
 
+from ext.modules import Module
 from ext.config import settings
-from ext import db
-from ext.db.models import Module
+from ext.db import models
 
 
-class BotModuleManager(commands.Cog):
-
-    name = "BotModuleManager"
-    path = "ext.modules.botmodulemanager"
-    disableable = False
-    emoji = None 
-
-    def __init__(self, app):
-        self.app = app
-        self.session = db.Session()
-        self._init_module_in_db()
+class BotModuleManager(Module):
 
     # Auxiliary methods
-
-    def _init_module_in_db(self):
-        try:
-            module = self.session.query(Module).filter(or_(Module.name == self.name, Module.path == self.path)).one()
-            module.name = self.name
-            module.path = self.path
-            module.disableable = self.disableable
-            module.emoji = self.emoji
-            self.session.commit()
-        except NoResultFound:
-            module = Module(
-                name=self.name,
-                path=self.path,
-                disableable=self.disableable,
-                emoji=self.emoji
-            )
-            self.session.add(module)
-            self.session.commit()
-
     def _get_unloaded_modules(self):
         unloaded_modules = []
         app_modules = self.app.extensions.keys()
-        db_modules = self.session.query(Module).filter(Module.disableable == True).all()
-        for module in db_modules:
-            if module.path not in app_modules:
-                unloaded_modules.append(module)
+        db_modules = self.session.query(models.Module).filter(models.Module.disableable == True).all()
+        for db_module in db_modules:
+            if db_module.path not in app_modules:
+                unloaded_modules.append(db_module)
         return unloaded_modules
 
     def _get_loaded_modules(self):
         loaded_modules = []
         app_modules = self.app.extensions.keys()
-        db_modules = self.session.query(Module).filter(Module.disableable == True).all()
-        for module in db_modules:
-            if module.path in app_modules:
-                loaded_modules.append(module)
+        db_modules = self.session.query(models.Module).filter(models.Module.disableable == True).all()
+        for db_module in db_modules:
+            if db_module.path in app_modules:
+                loaded_modules.append(db_module)
         return loaded_modules
 
     # Command methods
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"The BotModuleManager module are online!")
 
     @commands.command()
     @commands.has_role("admin")

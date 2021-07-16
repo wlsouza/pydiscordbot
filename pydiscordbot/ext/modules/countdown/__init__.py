@@ -10,4 +10,11 @@ def init_app(app):
 
 
 def setup(app):
-    app.add_cog(Countdown(app))
+    module = Countdown(
+        app = app,
+        name = "Countdown",
+        path = "ext.modules.countdown",
+        disableable = True,
+        emoji = "⏰" 
+    )
+    app.add_cog(module)
