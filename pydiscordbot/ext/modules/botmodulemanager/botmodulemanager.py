@@ -29,9 +29,8 @@ class BotModuleManager(Module):
         return loaded_modules
 
     # Command methods
-
     @commands.command()
-    @commands.has_role("admin")
+    @commands.is_owner()
     async def load_modules(self, ctx):
         try:
             # set select/dropdown options
@@ -81,7 +80,7 @@ class BotModuleManager(Module):
             await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
 
     @commands.command()
-    @commands.has_role("admin")
+    @commands.is_owner()
     async def unload_modules(self, ctx):
         try:
             # set select/dropdown options
@@ -132,7 +131,7 @@ class BotModuleManager(Module):
 
 
     @commands.command()
-    @commands.has_role("admin")
+    @commands.is_owner()
     async def reload_modules(self, ctx):
         try:
             # set select/dropdown options

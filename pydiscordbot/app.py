@@ -8,6 +8,7 @@ from ext import db
 
 
 def create_app():
+    
     # creating bot
     app = commands.Bot(command_prefix=checkers.get_prefix)
     slash = SlashClient(app)
