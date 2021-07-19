@@ -13,16 +13,16 @@ class GuildModuleManager(Module):
     # Auxiliary methods
     def _get_unloaded_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        unloaded_modules = self.session.query(models.GuildModule).filter(
-            models.GuildModule.id == guild_id,
+        unloaded_modules = self.session.query(models.Module).filter(
+            models.GuildModule.guild_id == guild_id,
             models.GuildModule.active == False
         ).all()
         return unloaded_modules
 
     def _get_loaded_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        loaded_modules = self.session.query(models.GuildModule).filter(
-            models.GuildModule.id == guild_id,
+        loaded_modules = self.session.query(models.Module).filter(
+            models.GuildModule.guild_id == guild_id,
             models.GuildModule.active == True
         ).all()
         return loaded_modules
@@ -31,7 +31,7 @@ class GuildModuleManager(Module):
         guild_id = ctx.guild.id
         # Get a list of all modules ids from that guild into db
         guild_modules_ids = [
-            row.guild_id for row in self.session.query(
+            row.module_id for row in self.session.query(
                 models.GuildModule.module_id
             ).filter(
                 models.GuildModule.guild_id == guild_id
@@ -53,24 +53,29 @@ class GuildModuleManager(Module):
                 self.session.add(guild_module)
                 self.session.commit()
 
-            
+    # @commands.command()
+    # async def test(self, ctx):
+    #     self._update_guildmodules_of_guild(ctx)
+    #     self._get_loaded_modules_of_guild(ctx)
+
 
     # Command methods
-
     # @commands.command()
+    # @commands.guild_only()
     # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
     # async def load_modules(self, ctx):
     #     try:
+    #         self._update_guildmodules_of_guild(ctx)
     #         # set select/dropdown options
     #         select_options = [
     #             SelectOption(label="Cancel", value="cancel", emoji="❌")
     #         ]
-    #         for module in self._get_unloaded_modules():
+    #         for module in self._get_unloaded_modules_of_guild(ctx):
     #             select_options.insert(
     #                 0,
     #                 SelectOption(
-    #                     label=module.name.title(),
-    #                     value=module.path,
+    #                     label=module.name,
+    #                     value=module.id,
     #                     emoji=module.emoji
     #                 )
     #             )
@@ -78,7 +83,7 @@ class GuildModuleManager(Module):
     #             "Select the module to be loaded into the bot:",
     #             components=[
     #                 SelectMenu(
-    #                     custom_id="load_module",
+    #                     custom_id="load_guild_module",
     #                     placeholder=f"Choose up to {len(select_options)} modules",
     #                     max_values=len(select_options),
     #                     options=select_options
