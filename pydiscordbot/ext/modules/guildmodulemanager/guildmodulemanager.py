@@ -11,27 +11,49 @@ from ext.utils import checkers
 class GuildModuleManager(Module):
 
     # Auxiliary methods
-    def _get_unloaded_modules(self, guild_id):
-        try:
-            # guild_id = message.guild.id
-            unloaded_modules = self.session.query(models.GuildModule).filter(
-                models.GuildModule.id == guild_id,
-                models.GuildModule.active == False
-            ).all()
-            return unloaded_modules
-        except:
-            raise NotImplemented
+    def _get_unloaded_modules_of_guild(self, ctx):
+        guild_id = ctx.guild.id
+        unloaded_modules = self.session.query(models.GuildModule).filter(
+            models.GuildModule.id == guild_id,
+            models.GuildModule.active == False
+        ).all()
+        return unloaded_modules
 
-    def _get_loaded_modules(self, guild_id):
-        try:
-            # guild_id = message.guild.id
-            loaded_modules = self.session.query(models.GuildModule).filter(
-                models.GuildModule.id == guild_id,
-                models.GuildModule.active == True
-            ).all()
-            return loaded_modules
-        except:
-            raise NotImplemented
+    def _get_loaded_modules_of_guild(self, ctx):
+        guild_id = ctx.guild.id
+        loaded_modules = self.session.query(models.GuildModule).filter(
+            models.GuildModule.id == guild_id,
+            models.GuildModule.active == True
+        ).all()
+        return loaded_modules
+
+    def _update_guildmodules_of_guild(self, ctx):
+        guild_id = ctx.guild.id
+        # Get a list of all modules ids from that guild into db
+        guild_modules_ids = [
+            row.guild_id for row in self.session.query(
+                models.GuildModule.module_id
+            ).filter(
+                models.GuildModule.guild_id == guild_id
+            )
+        ]
+        # Get a list of **rows** of disableable modules ids from db
+        disableable_module_ids = self.session.query(models.Module.id).filter(
+            models.Module.disableable == True
+        )
+        # For each disableable module id from db check if exists a guildmodule of 
+        # that module and guild id and insert it if not
+        for module_id, in disableable_module_ids:
+            if module_id not in guild_modules_ids:
+                guild_module =  models.GuildModule(
+                    guild_id = guild_id,
+                    module_id = module_id,
+                    active = False
+                )
+                self.session.add(guild_module)
+                self.session.commit()
+
+            
 
     # Command methods
 
