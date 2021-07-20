@@ -1,9 +1,9 @@
 from discord.ext import commands
-from asyncio.exceptions import CancelledError, TimeoutError
 from dislash import SelectMenu, SelectOption
+from asyncio.exceptions import CancelledError, TimeoutError
+from sqlalchemy.orm.exc import NoResultFound
 
 from ext.modules import Module
-from ext.config import settings
 from ext.db import models
 from ext.utils import checkers
 
@@ -68,59 +68,65 @@ class GuildModuleManager(Module):
 
 
     # Command methods
-    # @commands.command(name= "guild.load_modules")
-    # @commands.guild_only()
-    # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
-    # async def load_modules(self, ctx):
-    #     try:
-    #         self._update_guildmodules_of_guild(ctx)
-    #         # set select/dropdown options
-    #         select_options = [
-    #             SelectOption(label="Cancel", value="cancel", emoji="❌")
-    #         ]
-    #         for module in self._get_unloaded_modules_of_guild(ctx):
-    #             select_options.insert(
-    #                 0,
-    #                 SelectOption(
-    #                     label=module.name,
-    #                     value=module.id,
-    #                     emoji=module.emoji
-    #                 )
-    #             )
-    #         msg = await ctx.send(
-    #             "Select the module to be loaded into the bot:",
-    #             components=[
-    #                 SelectMenu(
-    #                     custom_id="load_guild_module",
-    #                     placeholder=f"Choose up to {len(select_options)} modules",
-    #                     max_values=len(select_options),
-    #                     options=select_options
-    #                 )
-    #             ]
-    #         )
-    #         # Wait for a click on the menu that was sent.
-    #         inter = await msg.wait_for_dropdown(
-    #             check=(lambda m: m.author == ctx.author),
-    #             timeout=60
-    #         )
-    #         # Tells which option was selected. 
-    #         selected_options = inter.select_menu.selected_options
-    #         selected_labels = [option.label for option in selected_options]
-    #         selected_values = [option.value for option in selected_options]
-    #         if "cancel" in selected_values:
-    #             raise CancelledError()
-    #         # Set guildmodules.active to True
-    #         for module_id in selected_values:
-    #             guild_module = self.session.query(models.GuildModule).filter(
-    #                 models.Module.id == module_id
-    #             )
-    #             guild_module.active = True
-    #         self.session.commit()
-    #         await inter.reply(f"👌 The following module(s) have been loaded: {', '.join(selected_labels)}")
-    #     except CancelledError:
-    #         await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
-    #     except TimeoutError:
-    #         await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+    @commands.command(name= "guild.load_modules")
+    @commands.guild_only()
+    @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
+    async def load_modules(self, ctx):
+        try:
+            self._update_guildmodules_of_guild(ctx)
+            # set select/dropdown options
+            select_options = [
+                SelectOption(label="Cancel", value="cancel", emoji="❌")
+            ]
+            for module in self._get_unloaded_modules_of_guild(ctx):
+                select_options.insert(
+                    0,
+                    SelectOption(
+                        label=module.name,
+                        value=module.id,
+                        emoji=module.emoji
+                    )
+                )
+            msg = await ctx.send(
+                "Select the module to be loaded into the bot:",
+                components=[
+                    SelectMenu(
+                        custom_id="load_guild_module",
+                        placeholder=f"Choose up to {len(select_options)} modules",
+                        max_values=len(select_options),
+                        options=select_options
+                    )
+                ]
+            )
+            # Wait for a click on the menu that was sent.
+            inter = await msg.wait_for_dropdown(
+                check=(lambda m: m.author == ctx.author),
+                timeout=60
+            )
+            # Tells which option was selected. 
+            selected_options = inter.select_menu.selected_options
+            selected_labels = [option.label for option in selected_options]
+            selected_values = [option.value for option in selected_options]
+            if "cancel" in selected_values:
+                raise CancelledError()
+            # Set guildmodules.active to True
+            for module_id in selected_values:
+                guild_module = (
+                    self.session.query(models.GuildModule)
+                    .filter(
+                        models.GuildModule.guild_id == ctx.guild.id,
+                        models.GuildModule.module_id == module_id
+                    ).one()
+                )
+                guild_module.active = True
+            self.session.commit()
+            await inter.reply(f"👌 The following module(s) have been loaded: {', '.join(selected_labels)}")
+        except CancelledError:
+            await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
+        except TimeoutError:
+            await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+        except NoResultFound:
+            await msg.reply(f"😿 The modules could not be loaded, please contact your system administrator.")
 
     # @commands.command()
     # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
