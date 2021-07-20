@@ -13,18 +13,26 @@ class GuildModuleManager(Module):
     # Auxiliary methods
     def _get_unloaded_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        unloaded_modules = self.session.query(models.Module).filter(
-            models.GuildModule.guild_id == guild_id,
-            models.GuildModule.active == False
-        ).all()
+        unloaded_modules = (
+            self.session.query(models.Module)
+            .join(models.GuildModule)
+            .filter(
+                models.GuildModule.guild_id == guild_id,
+                models.GuildModule.active == False
+            ).all()
+        )
         return unloaded_modules
 
     def _get_loaded_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        loaded_modules = self.session.query(models.Module).filter(
-            models.GuildModule.guild_id == guild_id,
-            models.GuildModule.active == True
-        ).all()
+        loaded_modules = (
+            self.session.query(models.Module)
+            .join(models.GuildModule)
+            .filter(
+                models.GuildModule.guild_id == guild_id,
+                models.GuildModule.active == True
+            ).all()
+        )
         return loaded_modules
 
     def _update_guildmodules_of_guild(self, ctx):
@@ -60,7 +68,7 @@ class GuildModuleManager(Module):
 
 
     # Command methods
-    # @commands.command()
+    # @commands.command(name= "guild.load_modules")
     # @commands.guild_only()
     # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
     # async def load_modules(self, ctx):
@@ -101,16 +109,18 @@ class GuildModuleManager(Module):
     #         selected_values = [option.value for option in selected_options]
     #         if "cancel" in selected_values:
     #             raise CancelledError()
-    #         # Load the modules
-    #         for module_path in selected_values:
-    #             self.app.load_extension(module_path)
+    #         # Set guildmodules.active to True
+    #         for module_id in selected_values:
+    #             guild_module = self.session.query(models.GuildModule).filter(
+    #                 models.Module.id == module_id
+    #             )
+    #             guild_module.active = True
+    #         self.session.commit()
     #         await inter.reply(f"👌 The following module(s) have been loaded: {', '.join(selected_labels)}")
     #     except CancelledError:
     #         await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
     #     except TimeoutError:
     #         await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
-    #     except ModuleNotFoundError:
-    #         await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
 
     # @commands.command()
     # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())

@@ -5,7 +5,7 @@ from ..config import settings
 
 Base = declarative_base()
 
-engine = create_engine(settings.sqlalchemy_database_url, echo=False)
+engine = create_engine(settings.sqlalchemy_database_url, echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
