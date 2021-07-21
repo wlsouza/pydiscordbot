@@ -44,7 +44,7 @@ class GuildModule(Base):
     id = Column(Integer,autoincrement=True, primary_key=True)
     guild_id = Column(Integer, ForeignKey("guilds.id"))
     module_id = Column(Integer, ForeignKey("modules.id"))
-    active = Column(Boolean, nullable=False, default=False)
+    enabled = Column(Boolean, nullable=False, default=False)
 
     #relationships
     guild = relationship("Guild", back_populates="guildmodules")
