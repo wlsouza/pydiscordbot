@@ -18,7 +18,7 @@ class GuildModuleManager(Module):
             .join(models.GuildModule)
             .filter(
                 models.GuildModule.guild_id == guild_id,
-                models.GuildModule.active == False
+                models.GuildModule.enabled == False
             ).all()
         )
         return disabled_modules
@@ -30,7 +30,7 @@ class GuildModuleManager(Module):
             .join(models.GuildModule)
             .filter(
                 models.GuildModule.guild_id == guild_id,
-                models.GuildModule.active == True
+                models.GuildModule.enabled == True
             ).all()
         )
         return enabled_modules
