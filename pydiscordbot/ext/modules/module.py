@@ -1,4 +1,3 @@
-from abc import ABC
 
 from discord.ext import commands
 from sqlalchemy import or_
@@ -9,7 +8,6 @@ from ext.db import models
 
 
 class Module(commands.Cog):
-
 
     def __init__(self, app, name, path, disableable, emoji):
         self.app = app

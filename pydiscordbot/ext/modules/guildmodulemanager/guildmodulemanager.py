@@ -11,9 +11,9 @@ from ext.utils import checkers
 class GuildModuleManager(Module):
 
     # Auxiliary methods
-    def _get_unloaded_modules_of_guild(self, ctx):
+    def _get_inactive_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        unloaded_modules = (
+        inactive_modules = (
             self.session.query(models.Module)
             .join(models.GuildModule)
             .filter(
@@ -21,11 +21,11 @@ class GuildModuleManager(Module):
                 models.GuildModule.active == False
             ).all()
         )
-        return unloaded_modules
+        return inactive_modules
 
-    def _get_loaded_modules_of_guild(self, ctx):
+    def _get_active_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        loaded_modules = (
+        active_modules = (
             self.session.query(models.Module)
             .join(models.GuildModule)
             .filter(
@@ -33,7 +33,7 @@ class GuildModuleManager(Module):
                 models.GuildModule.active == True
             ).all()
         )
-        return loaded_modules
+        return active_modules
 
     def _update_guildmodules_of_guild(self, ctx):
         guild_id = ctx.guild.id
@@ -68,17 +68,17 @@ class GuildModuleManager(Module):
 
 
     # Command methods
-    @commands.command(name= "guild.load_modules")
+    @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
-    async def load_modules(self, ctx):
+    async def active_modules(self, ctx):
         try:
             self._update_guildmodules_of_guild(ctx)
             # set select/dropdown options
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module in self._get_unloaded_modules_of_guild(ctx):
+            for module in self._get_inactive_modules_of_guild(ctx):
                 select_options.insert(
                     0,
                     SelectOption(
