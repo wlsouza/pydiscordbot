@@ -56,7 +56,7 @@ class GuildModuleManager(Module):
                 guild_module =  models.GuildModule(
                     guild_id = guild_id,
                     module_id = module_id,
-                    active = False
+                    enabled = False
                 )
                 self.session.add(guild_module)
                 self.session.commit()
@@ -78,7 +78,7 @@ class GuildModuleManager(Module):
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module in self._get_enabled_modules_of_guild(ctx):
+            for module in self._get_disabled_modules_of_guild(ctx):
                 select_options.insert(
                     0,
                     SelectOption(
@@ -88,10 +88,10 @@ class GuildModuleManager(Module):
                     )
                 )
             msg = await ctx.send(
-                "Select the module to be loaded into the bot:",
+                "Select the module(s) to be enable:",
                 components=[
                     SelectMenu(
-                        custom_id="load_guild_module",
+                        custom_id="enable_guild_module",
                         placeholder=f"Choose up to {len(select_options)} modules",
                         max_values=len(select_options),
                         options=select_options
@@ -109,7 +109,7 @@ class GuildModuleManager(Module):
             selected_values = [option.value for option in selected_options]
             if "cancel" in selected_values:
                 raise CancelledError()
-            # Set guildmodules.active to True
+            # Set guildmodules.enabled to True
             for module_id in selected_values:
                 guild_module = (
                     self.session.query(models.GuildModule)
@@ -118,137 +118,92 @@ class GuildModuleManager(Module):
                         models.GuildModule.module_id == module_id
                     ).one()
                 )
-                guild_module.active = True
+                guild_module.enabled = True
             self.session.commit()
-            await inter.reply(f"👌 The following module(s) have been loaded: {', '.join(selected_labels)}")
+            await inter.reply(f"👌 The following module(s) have been enabled: {', '.join(selected_labels)}")
         except CancelledError:
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
             await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
         except NoResultFound:
-            await msg.reply(f"😿 The modules could not be loaded, please contact your system administrator.")
+            await msg.reply(f"😿 The modules could not be enabled, please contact your system administrator.")
 
+    @commands.command()
+    @commands.guild_only()
+    @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
+    async def disable_modules(self, ctx):
+        try:
+            self._update_guildmodules_of_guild(ctx)
+            # set select/dropdown options
+            select_options = [
+                SelectOption(label="Cancel", value="cancel", emoji="❌")
+            ]
+            for module in self._get_enabled_modules_of_guild(ctx):
+                select_options.insert(
+                    0,
+                    SelectOption(
+                        label=module.name,
+                        value=module.id,
+                        emoji=module.emoji
+                    )
+                )
+            msg = await ctx.send(
+                "Select the module(s) to be disable:",
+                components=[
+                    SelectMenu(
+                        custom_id="disable_guild_module",
+                        placeholder=f"Choose up to {len(select_options)} modules",
+                        max_values=len(select_options),
+                        options=select_options
+                    )
+                ]
+            )
+            # Wait for a click on the menu that was sent.
+            inter = await msg.wait_for_dropdown(
+                check=(lambda m: m.author == ctx.author),
+                timeout=60
+            )
+            # Tells which option was selected. 
+            selected_options = inter.select_menu.selected_options
+            selected_labels = [option.label for option in selected_options]
+            selected_values = [option.value for option in selected_options]
+            if "cancel" in selected_values:
+                raise CancelledError()
+            # Set guildmodules.enabled to False
+            for module_id in selected_values:
+                guild_module = (
+                    self.session.query(models.GuildModule)
+                    .filter(
+                        models.GuildModule.guild_id == ctx.guild.id,
+                        models.GuildModule.module_id == module_id
+                    ).one()
+                )
+                guild_module.enabled = False
+            self.session.commit()
+            await inter.reply(f"👌 The following module(s) have been disabled: {', '.join(selected_labels)}")
+        except CancelledError:
+            await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
+        except TimeoutError:
+            await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
+        except NoResultFound:
+            await msg.reply(f"😿 The modules could not be disabled, please contact your system administrator.")
 
-    # @commands.command()
-    # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
-    # async def unload_modules(self, ctx):
-    #     try:
-    #         # set select/dropdown options
-    #         select_options = [
-    #             SelectOption(label="Cancel", value="cancel", emoji="❌")
-    #         ]
-    #         for module in self._get_loaded_modules():
-    #             select_options.insert(
-    #                 0,
-    #                 SelectOption(
-    #                     label=module.name.title(),
-    #                     value=module.path,
-    #                     emoji=module.emoji
-    #                 )
-    #             )
-    #         msg = await ctx.send(
-    #             "Select the module to be unloaded from the bot:",
-    #             components=[
-    #                 SelectMenu(
-    #                     custom_id="unload_module",
-    #                     placeholder=f"Choose up to {len(select_options)} modules",
-    #                     max_values=len(select_options),
-    #                     options=select_options
-    #                 )
-    #             ]
-    #         )
-    #         # Wait for a click on the menu that was sent.
-    #         inter = await msg.wait_for_dropdown(
-    #             check= (lambda m: m.author == ctx.author),
-    #             timeout=60
-    #         )
-    #         # Tells which option was selected. 
-    #         selected_options = inter.select_menu.selected_options
-    #         selected_labels = [option.label for option in selected_options]
-    #         selected_values = [option.value for option in selected_options]
-    #         if "cancel" in selected_values:
-    #             raise CancelledError()
-    #         # Load the modules
-    #         for module_path in selected_values:
-    #             self.app.unload_extension(module_path)
-    #         await inter.reply(f"👌 The following module(s) have been unloaded: {', '.join(selected_labels)}")
-    #     except CancelledError:
-    #         await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
-    #     except TimeoutError:
-    #         await msg.reply("⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
-    #     except ModuleNotFoundError:
-    #         await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
-
-
-    # @commands.command()
-    # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
-    # async def reload_modules(self, ctx):
-    #     try:
-    #         # set select/dropdown options
-    #         select_options = [
-    #             SelectOption(label="Cancel", value="cancel", emoji="❌")
-    #         ]
-    #         for module in self._get_loaded_modules():
-    #             select_options.insert(
-    #                 0,
-    #                 SelectOption(
-    #                     label=module.name.title(),
-    #                     value=module.path,
-    #                     emoji=module.emoji
-    #                 )
-    #             )
-    #         msg = await ctx.send(
-    #             "Select the module to be reloaded from the bot:",
-    #             components=[
-    #                 SelectMenu(
-    #                     custom_id="reload_module",
-    #                     placeholder=f"Choose up to {len(select_options)} modules",
-    #                     max_values=len(select_options),
-    #                     options=select_options
-    #                 )
-    #             ]
-    #         )
-    #         # Wait for a click on the menu that was sent.
-    #         inter = await msg.wait_for_dropdown(
-    #             check= (lambda m: m.author == ctx.author),
-    #             timeout=60
-    #         )
-    #         # Tells which option was selected. 
-    #         selected_options = inter.select_menu.selected_options
-    #         selected_labels = [option.label for option in selected_options]
-    #         selected_values = [option.value for option in selected_options]
-    #         if "cancel" in selected_values:
-    #             raise CancelledError()
-    #         # Load the modules
-    #         for module_path in selected_values:
-    #             self.app.unload_extension(module_path)
-    #         await inter.reply(f"👌 The following module(s) have been reloaded: {', '.join(selected_labels)}")  
-    #     except CancelledError:
-    #         await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
-    #     except TimeoutError:
-    #         await msg.reply("⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
-    #     except ModuleNotFoundError:
-    #         await inter.reply(f"😿 Unknown error. Please contact the administrator. ")
-
-    # @reload_modules.error
-    # @unload_modules.error
-    # @load_modules.error
-    # async def extension_errors(self, ctx, error):
-    #     try:
-    #         error_msgs = {
-    #             commands.ExtensionNotFound: f"This extension was not found.\nCheck the available modules using the "
-    #                                         f"{settings.COMMAND_PREFIX}available_modules command.",
-    #             commands.ExtensionAlreadyLoaded: f"This extension already loaded!",
-    #             commands.NoEntryPointError: f"This extension can't be loaded! Please contact the system admin.",
-    #             commands.ExtensionFailed: f"This extension cannot be loaded because an error was found in it."
-    #                                       f"Please contact the system admin.",
-    #             commands.ExtensionNotLoaded: f"This extension isn't loaded! You can check loaded extensions"
-    #                                          f" using {settings.COMMAND_PREFIX}loaded_extensions"
-    #         }
-    #         if message := error_msgs.get(type(error.original)):
-    #             await ctx.send(message)
-    #     except AttributeError:
-    #         pass
+    @disable_modules.error
+    @enable_modules.error
+    async def modules_errors(self, ctx, error):
+        try:
+            error_msgs = {
+                commands.ExtensionNotFound: f"This extension was not found.\nPlease contact the system admin.",
+                commands.ExtensionAlreadyLoaded: f"This extension already loaded!",
+                commands.NoEntryPointError: f"This extension can't be loaded! Please contact the system admin.",
+                commands.ExtensionFailed: f"This extension cannot be loaded because an error was found in it."
+                                          f"Please contact the system admin.",
+                commands.ExtensionNotLoaded: f"This extension isn't loaded!"
+            }
+            if message := error_msgs.get(type(error.original)):
+                await ctx.send(message)
+        except AttributeError:
+            pass
 
     # @commands.Cog.listener()
     # async def on_command_error(self, ctx, error):

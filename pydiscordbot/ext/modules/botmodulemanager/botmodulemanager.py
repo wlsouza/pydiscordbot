@@ -186,21 +186,19 @@ class BotModuleManager(Module):
     async def extension_errors(self, ctx, error):
         try:
             error_msgs = {
-                commands.ExtensionNotFound: f"This extension was not found.\nCheck the available modules using the "
-                                            f"{settings.COMMAND_PREFIX}available_modules command.",
+                commands.ExtensionNotFound: f"This extension was not found.\nPlease contact the system admin.",
                 commands.ExtensionAlreadyLoaded: f"This extension already loaded!",
                 commands.NoEntryPointError: f"This extension can't be loaded! Please contact the system admin.",
                 commands.ExtensionFailed: f"This extension cannot be loaded because an error was found in it."
                                           f"Please contact the system admin.",
-                commands.ExtensionNotLoaded: f"This extension isn't loaded! You can check loaded extensions"
-                                             f" using {settings.COMMAND_PREFIX}loaded_extensions"
+                commands.ExtensionNotLoaded: f"This extension isn't loaded!"
             }
             if message := error_msgs.get(type(error.original)):
                 await ctx.send(message)
         except AttributeError:
             pass
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.MissingRole):
-            await ctx.send("You don't have the correct role for this command.")
+    # @commands.Cog.listener()
+    # async def on_command_error(self, ctx, error):
+    #     if isinstance(error, commands.errors.MissingRole):
+    #         await ctx.send("You don't have the correct role for this command.")
