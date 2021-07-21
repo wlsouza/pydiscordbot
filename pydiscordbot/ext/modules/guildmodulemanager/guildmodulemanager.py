@@ -11,9 +11,9 @@ from ext.utils import checkers
 class GuildModuleManager(Module):
 
     # Auxiliary methods
-    def _get_inactive_modules_of_guild(self, ctx):
+    def _get_disabled_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        inactive_modules = (
+        disabled_modules = (
             self.session.query(models.Module)
             .join(models.GuildModule)
             .filter(
@@ -21,11 +21,11 @@ class GuildModuleManager(Module):
                 models.GuildModule.active == False
             ).all()
         )
-        return inactive_modules
+        return disabled_modules
 
-    def _get_active_modules_of_guild(self, ctx):
+    def _get_enabled_modules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        active_modules = (
+        enabled_modules = (
             self.session.query(models.Module)
             .join(models.GuildModule)
             .filter(
@@ -33,7 +33,7 @@ class GuildModuleManager(Module):
                 models.GuildModule.active == True
             ).all()
         )
-        return active_modules
+        return enabled_modules
 
     def _update_guildmodules_of_guild(self, ctx):
         guild_id = ctx.guild.id
@@ -71,14 +71,14 @@ class GuildModuleManager(Module):
     @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
-    async def active_modules(self, ctx):
+    async def enable_modules(self, ctx):
         try:
             self._update_guildmodules_of_guild(ctx)
             # set select/dropdown options
             select_options = [
                 SelectOption(label="Cancel", value="cancel", emoji="❌")
             ]
-            for module in self._get_inactive_modules_of_guild(ctx):
+            for module in self._get_enabled_modules_of_guild(ctx):
                 select_options.insert(
                     0,
                     SelectOption(
@@ -127,6 +127,7 @@ class GuildModuleManager(Module):
             await msg.reply(f"⚠️ No modules were selected within the timeout (60 seconds). The process was aborted.")
         except NoResultFound:
             await msg.reply(f"😿 The modules could not be loaded, please contact your system administrator.")
+
 
     # @commands.command()
     # @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
