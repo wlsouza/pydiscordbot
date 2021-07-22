@@ -37,7 +37,7 @@ class GuildModuleManager(Module):
 
     def _update_guildmodules_of_guild(self, ctx):
         guild_id = ctx.guild.id
-        # Get a list of all modules ids from that guild into db
+        # Get a list of all guildmodules ids from that guild into db
         guild_modules_ids = [
             row.module_id for row in self.session.query(
                 models.GuildModule.module_id

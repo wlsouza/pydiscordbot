@@ -1,10 +1,12 @@
 from discord.ext import commands
 
-from ext import modules
+from ext.modules import Module
+from ext.utils import checkers
 
-class Countdown(modules.Module):
+class Countdown(Module):
 
     @commands.command()
+    @checkers.module_is_enabled_in_guild()
     async def ping(self, ctx):
         await ctx.send("pong!")
 
