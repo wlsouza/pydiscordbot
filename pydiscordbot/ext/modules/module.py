@@ -20,7 +20,15 @@ class Module(commands.Cog):
 
     def _init_module_in_db(self):
         try:
-            db_module = self.session.query(models.Module).filter(or_(models.Module.name == self.name, models.Module.path == self.path)).one()
+            db_module = (
+                self.session.query(models.Module)
+                .filter(
+                    or_(
+                        models.Module.name == self.name,
+                        models.Module.path == self.path
+                    )
+                ).one()
+            )
             db_module.name = self.name
             db_module.path = self.path
             db_module.disableable = self.disableable
