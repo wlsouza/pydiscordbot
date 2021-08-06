@@ -30,8 +30,17 @@ class GuildConfig(Module):
             
     # Command methods        
     @commands.command()
-    async def change_prefix(self, ctx):
-        raise NotImplementedError("To be implemented")
+    async def change_prefix(self, ctx, arg):
+        try:
+            new_prefix = arg.strip()
+            guild = self.session.query(models.Guild).filter(
+                models.Guild.id == ctx.guild.id
+            ).one()
+            guild.prefix = new_prefix
+            self.session.commit()
+        except:
+            self.session.rollback()
+            await ctx.send("😿 The prefix could not be changed, please contact your system administrator.")
 
     # Listeners methods
 
