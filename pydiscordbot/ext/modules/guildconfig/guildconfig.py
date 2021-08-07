@@ -30,6 +30,8 @@ class GuildConfig(Module):
             
     # Command methods        
     @commands.command()
+    @commands.guild_only()
+    @commands.check_any(commands.is_owner(), checkers.is_guild_owner())
     async def change_prefix(self, ctx, arg):
         try:
             new_prefix = arg.strip()
@@ -38,12 +40,12 @@ class GuildConfig(Module):
             ).one()
             guild.prefix = new_prefix
             self.session.commit()
+            await ctx.send("👌 The prefix was changed!")
         except:
             self.session.rollback()
             await ctx.send("😿 The prefix could not be changed, please contact your system administrator.")
 
     # Listeners methods
-
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         self._init_guild_in_db(guild)
