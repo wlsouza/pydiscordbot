@@ -10,11 +10,11 @@
 
 ## 🛠️ dependencies
 * [Python](https://www.python.org)
-* [discord.py](https://www.pygame.org/wiki/GettingStarted)
-* [dislash.py](https://www.pygame.org/wiki/GettingStarted)
-* [dynaconf](https://www.pygame.org/wiki/GettingStarted)
-* [sqlalchemy](https://www.pygame.org/wiki/GettingStarted)
-* [alembic](https://www.pygame.org/wiki/GettingStarted)
+* [discord.py](https://discordpy.readthedocs.io/en/latest/) - An API wrapper for Discord written in Python.
+* [dislash.py](https://dislashpy.readthedocs.io/en/latest/) - An extending library for discord.py that allows to build message components and slash commands.
+* [dynaconf](https://www.dynaconf.com) - A configuration management library for Python.
+* [sqlalchemy](https://www.sqlalchemy.org) - The Python SQL Toolkit and Object Relational Mapper (ORM).
+* [alembic](https://alembic.sqlalchemy.org/en/latest/) -  A database migrations tool written by the author of SQLAlchemy.
 
 ## 💻 Authors
 
