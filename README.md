@@ -8,7 +8,7 @@
 
 ## :construction_worker: Installing and Running
 
-## 🛠️ dependencies
+## 🛠️ Dependencies
 * [Python](https://www.python.org)
 * [discord.py](https://discordpy.readthedocs.io/en/latest/) - An API wrapper for Discord written in Python.
 * [dislash.py](https://dislashpy.readthedocs.io/en/latest/) - An extending library for discord.py that allows to build message components and slash commands.
