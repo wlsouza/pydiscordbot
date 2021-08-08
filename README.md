@@ -5,6 +5,7 @@
 [![Python 3.9](https://img.shields.io/badge/python-_>=_3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
 ## :dart: Goal
+The goal of this project was to explore the discord.py library and create a bot that will serve as a basis for creating other bots.
 
 ## :construction_worker: Installing and Running
 
