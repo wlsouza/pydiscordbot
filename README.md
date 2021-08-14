@@ -54,6 +54,8 @@ I made this template so that everyone can start their own bot already with a goo
 
 ## :construction_worker: Installing and Running
 
+> Soon...
+
 ## 🛠️ Dependencies
 * [Python](https://www.python.org)
 * [discord.py](https://discordpy.readthedocs.io/en/latest/) - An API wrapper for Discord written in Python.
