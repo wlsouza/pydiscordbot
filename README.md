@@ -15,7 +15,9 @@ I made this template so that everyone can start their own bot already with a goo
   
   > This feature allows you to load or unload the bot's modules (or Cogs, as you prefer to call it), that is, the bot owner (and only him) can in a simple way, unload a module for **all guilds** that are using the bot.  
   See how:  
-  GIF here
+  <p align="center">
+   <img src=".github/preview/bot_module_manager_preview.gif" width="500"/>
+  </p>
 </details>
 
 <details>
