@@ -2,7 +2,7 @@ from discord.ext import commands
 from dislash import SlashClient
 
 from ext.config import settings
-from ext.modules import  botmodulemanager, guildmodulemanager, guildconfig, countdown
+from ext.modules import  botmodulemanager, guildmodulemanager, guildconfig, ping
 from ext.utils import checkers
 from ext import db
 
@@ -22,7 +22,7 @@ def create_app():
     guildconfig.init_app(app) # Required module
 
     # Initiating secondary modules
-    countdown.init_app(app)
+    ping.init_app(app)
 
     return app.run(settings.TOKEN_BOT)
 

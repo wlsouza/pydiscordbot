@@ -1,4 +1,4 @@
-from .countdown import Countdown
+from .ping import Ping
 
 
 def init_app(app):
@@ -10,11 +10,11 @@ def init_app(app):
 
 
 def setup(app):
-    module = Countdown(
+    module = Ping(
         app = app,
-        name = "Countdown",
-        path = "ext.modules.countdown",
+        name = "Ping",
+        path = "ext.modules.ping",
         disableable = True,
-        emoji = "⏰" 
+        emoji = "🏓" 
     )
     app.add_cog(module)
