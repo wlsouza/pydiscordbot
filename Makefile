@@ -2,7 +2,7 @@ install:
 	pip install -e .
 
 uninstall:
-	pip uninstall starbot
+	pip uninstall pydiscordbot
 
 run:
-	python -m starbot
+	python -m pydiscordbot

@@ -71,7 +71,7 @@ class BotModuleManager(Module):
             # Load the modules
             for module_path in selected_values:
                 self.app.load_extension(module_path)
-            await inter.reply(f"👌 The following module(s) have been loaded: {', '.join(selected_labels)}")
+            await inter.reply(f"👌 The following module(s) has been loaded: {', '.join(selected_labels)}")
         except CancelledError:
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
@@ -121,7 +121,7 @@ class BotModuleManager(Module):
             # Load the modules
             for module_path in selected_values:
                 self.app.unload_extension(module_path)
-            await inter.reply(f"👌 The following module(s) have been unloaded: {', '.join(selected_labels)}")
+            await inter.reply(f"👌 The following module(s) has been unloaded: {', '.join(selected_labels)}")
         except CancelledError:
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
@@ -172,7 +172,7 @@ class BotModuleManager(Module):
             # Load the modules
             for module_path in selected_values:
                 self.app.unload_extension(module_path)
-            await inter.reply(f"👌 The following module(s) have been reloaded: {', '.join(selected_labels)}")  
+            await inter.reply(f"👌 The following module(s) has been reloaded: {', '.join(selected_labels)}")  
         except CancelledError:
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:

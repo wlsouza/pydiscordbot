@@ -120,7 +120,7 @@ class GuildModuleManager(Module):
                 )
                 guild_module.enabled = True
             self.session.commit()
-            await inter.reply(f"👌 The following module(s) have been enabled: {', '.join(selected_labels)}")
+            await inter.reply(f"👌 The following module(s) has been enabled: {', '.join(selected_labels)}")
         except CancelledError:
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
@@ -180,7 +180,7 @@ class GuildModuleManager(Module):
                 )
                 guild_module.enabled = False
             self.session.commit()
-            await inter.reply(f"👌 The following module(s) have been disabled: {', '.join(selected_labels)}")
+            await inter.reply(f"👌 The following module(s) has been disabled: {', '.join(selected_labels)}")
         except CancelledError:
             await inter.reply("⚠️ The process was canceled because the cancel option was selected.")
         except TimeoutError:
