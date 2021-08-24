@@ -1,11 +1,11 @@
 from dynaconf import Dynaconf
 
 settings = Dynaconf(
-    envvar_prefix="STARBOT",
+    envvar_prefix="PYDISCORDBOT",
     settings_files=["settings.toml", ".secrets.toml"],
     load_dotenv=True,
     environments=True,
-    env_switcher="STARBOT_ENV"
+    env_switcher="PYDISCORDBOT_ENV"
 )
 
 print(f"Config iniciada em modo: {settings.current_env}")

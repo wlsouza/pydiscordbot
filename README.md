@@ -29,7 +29,7 @@ I made this template so that everyone can start their own bot already with a goo
   > This feature allows the owner of the guild that is using the bot to activate or deactivate the modules that the guild can use.  
   >
   > **How use:**  
-  To use it, just send ```$enable_modules``` or ```$disable_modules``` and an interface like the one presented in the functionality above will appear for you to select the modules to be enabled or disabled.  
+  To use it, just send `$enable_modules` or `$disable_modules` and an interface like the one presented in the functionality above will appear for you to select the modules to be enabled or disabled.  
   >
   >**Obs.** Unlike the previous one this feature does not affect everyone who is using the bot, it only affects the guild that executed the command.
 </details>
@@ -42,11 +42,11 @@ I made this template so that everyone can start their own bot already with a goo
   > This feature allows the guild owner to select which prefix he will use when sending a command to the bot.  
   >
   > **How use:**  
-  To use it, just send ```$change_prefix %``` replacing the ```%``` with whatever character you want to use as a command prefix in your guild.  
+  To use it, just send `$change_prefix %` replacing the `%` with whatever character you want to use as a command prefix in your guild.  
   >
   >**Obs.** This functionality only affects the guild that executed the command. 
   >
-  >**Obs2.** After changing the prefix, the bot will no longer respond to commands starting with ```$``` (default prefix), and will only respond to commands using the prefix informed in the exchange. 
+  >**Obs2.** After changing the prefix, the bot will no longer respond to commands starting with `$` (default prefix), and will only respond to commands using the prefix informed in the exchange. 
 </details>
 
 ### This template also has:
@@ -55,9 +55,35 @@ I made this template so that everyone can start their own bot already with a goo
 - Configuration management using Dynaconf.
 - Factory pattern structure.
 
-## :construction_worker: Installing and Running
+## :construction_worker: Installing and Running:
 
-> Soon...
+### ⬇️ How to download it:
+
+This repository is a template, you can click on **["Use this template"](/wlsouza/pydiscordbot/generate)**`(<-here also works)` in the upper left to create GitHub repository based on this template.
+
+### ⚙️ How to set up:
+
+To use the project it is necessary to create a file called `.secrets.toml` with your bot's token and the database connection data.  
+
+      1. An example file is provided with the name "exemple.secrets.toml".
+      2. I developed this template using sqlite, you can use whatever database you like, but you might need to modify some things.
+
+If it isu want to change the environment to something other than "development" it is necessary to pass the desired env through the system variable `PYDISCORDBOT_ENV`.
+There are 2 simple ways to do this:
+
+1. Create the `.env` file with the following content:
+    `PYDISCORDBOT_ENV = "insert_the_environment_here(ex:PRODUCTION)"`.
+2. Export the environment variable using the bash command:
+    On linux:
+    ```bash
+    export PYDISCORDBOT_ENV=INSERT_THE_ENVIRONMENT_HERE
+    ```
+    On Windows:
+    ```powershell
+    set PYDISCORDBOT_ENV=INSERT_THE_ENVIRONMENT_HERE
+    ``` 
+### ✨️ How to start:
+Soon...
 
 ## 🛠️ Dependencies
 * [Python](https://www.python.org)
