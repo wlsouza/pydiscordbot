@@ -63,23 +63,23 @@ This repository is a template, you can click on **["Use this template"](/wlsouza
 
 ### ⚙️ How to set up:
 
-To use the project it is necessary to create a file called `.secrets.toml` with your bot's token and the database connection data.  
+To use the project it is necessary to create a file called `.secrets.toml` with your bot's token and the database connection data. 
+Observations:
+  1. An example file is provided with the name "exemple.secrets.toml".
+  2. I developed this template using sqlite, you can use whatever database you like, but you might need to modify some things.
 
-      1. An example file is provided with the name "exemple.secrets.toml".
-      2. I developed this template using sqlite, you can use whatever database you like, but you might need to modify some things.
-
-If it isu want to change the environment to something other than "development" it is necessary to pass the desired env through the system variable `PYDISCORDBOT_ENV`.
+If you want to change the environment to something other than "development" it is necessary to pass the desired env through the system variable `PYDISCORDBOT_ENV`.  
 There are 2 simple ways to do this:
 
 1. Create the `.env` file with the following content:
     `PYDISCORDBOT_ENV = "insert_the_environment_here(ex:PRODUCTION)"`.
-2. Export the environment variable using the bash command:
+2. Export the environment variable using the bash command: 
     On linux:
     ```bash
     export PYDISCORDBOT_ENV=INSERT_THE_ENVIRONMENT_HERE
     ```
     On Windows:
-    ```powershell
+    ```bat
     set PYDISCORDBOT_ENV=INSERT_THE_ENVIRONMENT_HERE
     ``` 
 ### ✨️ How to start:
