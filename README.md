@@ -64,7 +64,7 @@ This repository is a template, you can click on **["Use this template"](/wlsouza
 ### ⚙️ How to set up:
 
 To use the project it is necessary to create a file called `.secrets.toml` with your bot's token and the database connection data. 
-Observations:
+Notes:
   1. An example file is provided with the name "exemple.secrets.toml".
   2. I developed this template using sqlite, you can use whatever database you like, but you might need to modify some things.
 
@@ -83,15 +83,35 @@ There are 2 simple ways to do this:
     set PYDISCORDBOT_ENV=INSERT_THE_ENVIRONMENT_HERE
     ``` 
 ### ✨️ How to start:
-Soon...
+
+- Create a discord bot **[here](https://discord.com/developers/applications)**.
+- Get your bot token.
+- Invite your bot on servers using the following invite:
+  https://discordapp.com/oauth2/authorize?&client_id=YOUR_APPLICATION_ID_HERE&scope=bot&permissions=8 
+  (Replace `YOUR_APPLICATION_ID_HERE` with the application ID)
+- Install the dependencies with the following command:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- In the repository folder run the [app.py](pydiscordbot/app.py) file just as any other Python script (.py) file.
+  ```bash
+  python pydiscordbot/app.py
+  ```
+  Notes:  
+    - It is recommended that you do all of the above process using a virtual environment. (You can read about it [here](https://docs.python.org/3/tutorial/venv.html).)
+
+
+### Creating new modules.
+
+  Soon...
 
 ## 🛠️ Dependencies
-* [Python](https://www.python.org)
-* [discord.py](https://discordpy.readthedocs.io/en/latest/) - An API wrapper for Discord written in Python.
-* [dislash.py](https://dislashpy.readthedocs.io/en/latest/) - An extending library for discord.py that allows to build message components and slash commands.
-* [dynaconf](https://www.dynaconf.com) - A configuration management library for Python.
-* [sqlalchemy](https://www.sqlalchemy.org) - The Python SQL Toolkit and Object Relational Mapper (ORM).
-* [alembic](https://alembic.sqlalchemy.org/en/latest/) -  A database migrations tool written by the author of SQLAlchemy.
+- [Python](https://www.python.org)
+- [discord.py](https://discordpy.readthedocs.io/en/latest/) - An API wrapper for Discord written in Python.
+- [dislash.py](https://dislashpy.readthedocs.io/en/latest/) - An extending library for discord.py that allows to build message components and slash commands.
+- [dynaconf](https://www.dynaconf.com) - A configuration management library for Python.
+- [sqlalchemy](https://www.sqlalchemy.org) - The Python SQL Toolkit and Object Relational Mapper (ORM).
+- [alembic](https://alembic.sqlalchemy.org/en/latest/) -  A database migrations tool written by the author of SQLAlchemy.
 
 ## 💻 Authors
 
