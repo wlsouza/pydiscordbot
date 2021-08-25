@@ -59,7 +59,7 @@ I made this template so that everyone can start their own bot already with a goo
 
 ### ⬇️ How to download it:
 
-This repository is a template, you can click on **["Use this template"](/wlsouza/pydiscordbot/generate)**`(<-here also works)` in the upper left to create GitHub repository based on this template.
+This repository is a template, you can click on **Use this template** in the upper left to create GitHub repository based on this template.
 
 ### ⚙️ How to set up:
 
