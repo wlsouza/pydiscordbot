@@ -101,7 +101,7 @@ There are 2 simple ways to do this:
     - It is recommended that you do all of the above process using a virtual environment. (You can read about it [here](https://docs.python.org/3/tutorial/venv.html).)
 
 
-### How Create new modules:
+### 🆕 How Create new modules:
 
 Warning: I am assuming that you are already familiar with the [discord.py](https://discordpy.readthedocs.io/en/latest/) library and consequently with [Python](https://wwwpython.org) itself. 
 
