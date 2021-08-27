@@ -101,10 +101,92 @@ There are 2 simple ways to do this:
     - It is recommended that you do all of the above process using a virtual environment. (You can read about it [here](https://docs.python.org/3/tutorial/venv.html).)
 
 
-### Creating new modules.
+### How Create new modules:
 
-  Soon...
+Warning: I am assuming that you are already familiar with the [discord.py](https://discordpy.readthedocs.io/en/latest/) library and consequently with [Python](https://wwwpython.org) itself. 
 
+- Create a package (I'll use a ping module as an example) for your module inside the path: 
+`<<your_project_path>>/pydiscordbot/ext/modules`
+- Inside the generated package, create a file with the name of your module ex: `ping.py`. 
+Create a class that inherits from [Module](pydiscordbot/ext/modules/module.py), so your class will be a Cog (you can learn about this by clicking [here](https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html#ext-commands-cogs)) and will be inserted into the database as soon as the bot starts. 
+```python
+  from ext.modules import Module
+
+  class Ping(Module):
+    pass
+```
+- Inside your module class, create the command to be executed, in my case I'm creating a command that will answer a "Pong". 
+```python
+from discord.ext import commands
+
+from ext.modules import Module
+
+class Ping(Module):
+
+    @commands.command() 
+    async def ping(self, ctx):
+        await ctx.send("pong!")
+```
+- Put a checker that will check if the guild that is using the bot has enabled this module.
+(Required for the GuildModuleManager module to work)  
+```python
+from discord.ext import commands
+
+from ext.modules import Module
+from ext.utils import checkers
+
+class Ping(Module):
+
+    @commands.command()
+    @checkers.module_is_enabled_in_guild()
+    async def ping(self, ctx):
+        await ctx.send("pong!")
+```
+- The next step is to create a file called `__init__.py` inside the package so that your module can be started. 
+- Create a function called init_app that will take the bot as a parameter and start the module.  
+```python
+def init_app(app):
+    app.load_extension(__name__)
+```
+- Import your Cog class and create a function called setup that will receive the bot, instantiate your Cog class and add it to the bot.
+```python
+from .ping import Ping
+
+
+def init_app(app):
+    app.load_extension(__name__)
+
+
+def setup(app):
+    module = Ping(
+        app = app, 
+        name = "Ping",  # Enter the name of your module. 
+        path = "ext.modules.ping",  # Enter the path of your module.
+        disableable = True,  # Indicates whether the module can be disabled or not. 
+        emoji = "🏓" # Enter an emoji that represents your module. 
+    )
+    app.add_cog(module)
+```
+- To finish, import and initialize your module in the file [app.py](pydiscordbot/app.py):
+```python
+# <<Some imports here...>>
+from ext.modules import  botmodulemanager, guildmodulemanager, guildconfig, ping
+
+
+def create_app():
+    
+    # <<Creating bot here...>>
+
+    # <<Create database here...>>
+
+    # <<Initiating required modules here...>>
+
+    # Initiating your modules here!!!
+    ping.init_app(app)
+
+  # << Some more codes here...>>
+```
+Obs. The Ping module that was used as an example is available inside the template for reference and testing purposes. 
 ## 🛠️ Dependencies
 - [Python](https://www.python.org)
 - [discord.py](https://discordpy.readthedocs.io/en/latest/) - An API wrapper for Discord written in Python.
